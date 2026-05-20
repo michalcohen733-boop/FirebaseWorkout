@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.HomePageView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Home"
+    BackgroundColor="#F9FAFB"
+    NavigationPage.HasNavigationBar="False"
+    Padding="40">
+
+    <VerticalStackLayout
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        Spacing="16">
+
+        <!-- Title -->
+        <Label
+            Text="Issue Scanner"
+            FontSize="32"
+            FontAttributes="Bold"
+            TextColor="#1F2937"
+            HorizontalOptions="Center" />
+
+        <!-- Subtitle -->
+        <Label
+            Text="Report computer issues at your school"
+            FontSize="14"
+            TextColor="#6B7280"
+            HorizontalOptions="Center"
+            Margin="0,0,0,24" />
+
+        <!-- Sign In Button -->
+        <Button
+            Text="Sign In"
+            Command="{Binding SignInCommand}"
+            BackgroundColor="#6366F1"
+            TextColor="White"
+            FontSize="16"
+            FontAttributes="Bold"
+            HeightRequest="50"
+            WidthRequest="280"
+            CornerRadius="12" />
+
+        <!-- Sign Up Button -->
+        <Button
+            Text="Sign Up"
+            Command="{Binding SignUpCommand}"
+            BackgroundColor="#8B5CF6"
+            TextColor="White"
+            FontSize="16"
+            FontAttributes="Bold"
+            HeightRequest="50"
+            WidthRequest="280"
+            CornerRadius="12" />
+
+        <!-- Enter As Guest Button -->
+        <Border
+            HeightRequest="50"
+            WidthRequest="280"
+            BackgroundColor="Transparent"
+            Stroke="#E5E7EB"
+            StrokeThickness="1.5"
+            StrokeShape="RoundRectangle 12">
+            <Button
+                Text="Enter As Guest"
+                Command="{Binding EnterAsGuestCommand}"
+                BackgroundColor="Transparent"
+                TextColor="#6B7280"
+                FontSize="16"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                CornerRadius="12" />
+        </Border>
+
+    </VerticalStackLayout>
+</ContentPage>

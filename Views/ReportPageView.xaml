@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.ReportPageView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:FirebaseWorkout.Model"
+    Title="Report Issue"
+    BackgroundColor="#F9FAFB">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <!-- Computer info card -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                Padding="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label
+                        Text="Computer Info"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#6B7280" />
+                    <Label
+                        Text="{Binding ComputerDisplayInfo}"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#1F2937" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Question -->
+            <Label
+                Text="What's wrong with the computer?"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="#1F2937"
+                Margin="0,8,0,0" />
+
+            <!-- Issue checkboxes -->
+            <CollectionView
+                ItemsSource="{Binding IssueOptions}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:IssueType">
+                        <Border
+                            BackgroundColor="White"
+                            Stroke="#E5E7EB"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12"
+                            Margin="0,4">
+                            <HorizontalStackLayout>
+                                <CheckBox
+                                    IsChecked="{Binding IsSelected}"
+                                    Color="#6366F1"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Text="{Binding Name}"
+                                    FontSize="16"
+                                    TextColor="#1F2937"
+                                    VerticalOptions="Center"
+                                    Margin="12,0,0,0" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Other description (visible only when "other" is checked) -->
+            <VerticalStackLayout IsVisible="{Binding IsOtherSelected}">
+                <Label
+                    Text="Please describe:"
+                    FontSize="14"
+                    TextColor="#6B7280"
+                    Margin="0,8,0,4" />
+                <Editor
+                    Text="{Binding OtherDescription}"
+                    Placeholder="Describe the issue..."
+                    HeightRequest="100"
+                    BackgroundColor="White"
+                    TextColor="#1F2937" />
+            </VerticalStackLayout>
+
+            <!-- Submit button -->
+            <Button
+                Text="Submit Report"
+                Command="{Binding SubmitReportCommand}"
+                BackgroundColor="#6366F1"
+                TextColor="White"
+                HeightRequest="50"
+                CornerRadius="12"
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,16,0,0" />
+
+            <!-- Status message -->
+            <Label
+                Text="{Binding StatusMessage}"
+                TextColor="{Binding StatusColor}"
+                HorizontalOptions="Center"
+                IsVisible="{Binding HasStatusMessage}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

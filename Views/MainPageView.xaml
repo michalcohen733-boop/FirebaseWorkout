@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.MainPageView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    xmlns:zxingmodel="clr-namespace:ZXing.Net.Maui;assembly=ZXing.Net.Maui"
+    Title="Scan QR Code"
+    BackgroundColor="#F9FAFB">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Header -->
+        <HorizontalStackLayout Grid.Row="0" Padding="20">
+            <Label
+                Text="Issue Scanner"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#1F2937"
+                VerticalOptions="Center"
+                HorizontalOptions="StartAndExpand" />
+            <Button
+                Text="&#xe8b8;"
+                Command="{Binding SettingsCommand}"
+                BackgroundColor="Transparent"
+                TextColor="#6366F1"
+                FontFamily="MaterialIcons"
+                FontSize="24"
+                VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <!-- Row 1: QR Scanner -->
+        <Border
+            Grid.Row="1"
+            Margin="20"
+            Padding="4"
+            BackgroundColor="White"
+            Stroke="#E5E7EB"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 16">
+            <zxing:CameraBarcodeReaderView
+                IsDetecting="{Binding IsScanning}"
+                BarcodesDetected="OnBarcodesDetected"
+                HeightRequest="400" />
+        </Border>
+
+        <!-- Row 2: Manual entry -->
+        <VerticalStackLayout Grid.Row="2" Margin="20" Spacing="12">
+            <Label
+                Text="Or enter code manually:"
+                FontSize="14"
+                TextColor="#6B7280" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Entry
+                    Grid.Column="0"
+                    Placeholder="Enter computer code"
+                    Text="{Binding ManualCode}"
+                    BackgroundColor="White"
+                    TextColor="#1F2937"
+                    HeightRequest="50"
+                    Margin="0,0,8,0" />
+                <Button
+                    Grid.Column="1"
+                    Text="Go"
+                    Command="{Binding SubmitManualCodeCommand}"
+                    BackgroundColor="#6366F1"
+                    TextColor="White"
+                    WidthRequest="80"
+                    HeightRequest="50"
+                    CornerRadius="12"
+                    FontAttributes="Bold" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Row 3: Status message -->
+        <Label
+            Grid.Row="3"
+            Text="{Binding StatusMessage}"
+            TextColor="#EF4444"
+            HorizontalOptions="Center"
+            Margin="0,0,0,20"
+            IsVisible="{Binding HasStatusMessage}" />
+
+    </Grid>
+</ContentPage>

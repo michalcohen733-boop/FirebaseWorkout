@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.UpdateUserView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Update User"
+    BackgroundColor="#F9FAFB">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <!-- User info card (read-only) -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                Padding="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label
+                        Text="User Info"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#6B7280" />
+                    <Label
+                        Text="{Binding User.UserEmail}"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="#1F2937" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Section title -->
+            <Label
+                Text="Edit Details"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="#1F2937"
+                Margin="0,8,0,0" />
+
+            <!-- First Name -->
+            <Label Text="First Name" FontSize="12" TextColor="#6B7280" />
+            <Entry
+                Text="{Binding User.FirstName}"
+                BackgroundColor="White"
+                TextColor="#1F2937"
+                HeightRequest="50" />
+
+            <!-- Last Name -->
+            <Label Text="Last Name" FontSize="12" TextColor="#6B7280" Margin="0,8,0,0" />
+            <Entry
+                Text="{Binding User.LastName}"
+                BackgroundColor="White"
+                TextColor="#1F2937"
+                HeightRequest="50" />
+
+            <!-- Phone -->
+            <Label Text="Phone" FontSize="12" TextColor="#6B7280" Margin="0,8,0,0" />
+            <Entry
+                Text="{Binding User.UserMobile}"
+                BackgroundColor="White"
+                TextColor="#1F2937"
+                HeightRequest="50"
+                Keyboard="Numeric" />
+
+            <!-- Update button -->
+            <Button
+                Text="Update"
+                Command="{Binding UpdateCommand}"
+                BackgroundColor="#6366F1"
+                TextColor="White"
+                HeightRequest="50"
+                CornerRadius="12"
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,24,0,0" />
+
+            <!-- Status message -->
+            <Label
+                Text="{Binding StatusMessage}"
+                TextColor="{Binding StatusColor}"
+                HorizontalOptions="Center"
+                IsVisible="{Binding HasStatusMessage}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

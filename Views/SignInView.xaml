@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.SignInView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:FirebaseWorkout.ViewModels"
+    x:DataType="views:SignInViewModel"
+    NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Background>
+        <!--  Man Of Steel  -->
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0.0" Color="#780206" />
+            <!--<GradientStop Offset="0.5" Color="#12D8FA"/>-->
+            <GradientStop Offset="1.0" Color="#061161" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="25"
+            VerticalOptions="Center">
+
+            <!--  Header  -->
+            <Label
+                Margin="20"
+                FontAttributes="Bold"
+                FontSize="30"
+                HorizontalOptions="Center"
+                Text="KASATA"
+                TextColor="Snow"
+                VerticalOptions="Center" />
+
+            <!--  Error Message  -->
+            <Label
+                FontSize="20"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding SignInMessageVisible}"
+                Text="{Binding ErrorMessage}"
+                TextColor="#ff4dd2" />
+
+            <!--  Debug Mode Message  -->
+            <Label
+                FontSize="20"
+                IsVisible="{Binding IsDebugMode}"
+                Text="Debug Mode!"
+                TextColor="#66ff66" />
+
+            <!--  Email Entry  -->
+            <Border
+                Padding="10"
+                Stroke="#ccc"
+                StrokeShape="RoundRectangle 8"
+                StrokeThickness="1">
+                <Entry
+                    FontSize="18"
+                    Keyboard="Email"
+                    Placeholder="Email"
+                    ReturnType="Go"
+                    Text="{Binding UserEmail}"
+                    TextColor="Wheat" />
+            </Border>
+
+            <!--  Password Entry  -->
+            <Border
+                Stroke="#ccc"
+                StrokeShape="RoundRectangle 8"
+                StrokeThickness="1">
+                <Grid
+                    Padding="10"
+                    ColumnDefinitions="*,Auto"
+                    VerticalOptions="Center">
+                    <Entry
+                        BackgroundColor="Transparent"
+                        FontSize="18"
+                        IsPassword="{Binding EntryAsPassword}"
+                        Placeholder="Password"
+                        Text="{Binding UserPassword}"
+                        TextColor="Wheat"
+                        VerticalOptions="Center" />
+                    <Button
+                        Margin="5,0,0,0"
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding TogglePasswordCommand}"
+                        FontFamily="MaterialIcons"
+                        FontSize="24"
+                        HorizontalOptions="End"
+                        Text="{Binding PasswordIconCode}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!--  SignIn Button  -->
+            <Button
+                Command="{Binding SignInCommand}"
+                CornerRadius="8"
+                FontSize="18"
+                HeightRequest="50"
+                Text="SignIn" />
+
+            <!--  Stay In Checkbox  -->
+            <Border Stroke="Transparent">
+                <Grid Padding="2" ColumnDefinitions="*,4*,0.5*,6*">
+
+                    <CheckBox
+                        HorizontalOptions="Start"
+                        IsChecked="{Binding IsRememberMeChecked}"
+                        IsEnabled="{Binding IsCheckBoxEnabled}" />
+                    <Label
+                        Grid.Column="1"
+                        HorizontalOptions="Start"
+                        Text="remember me"
+                        TextColor="Wheat"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="3"
+                        BackgroundColor="Transparent"
+                        FontFamily="LexendSemiBold"
+                        HorizontalOptions="End"
+                        Text="Forget Password"
+                        TextColor="Wheat"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!--  Already have an account?  -->
+            <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <Label
+                    Margin="14,0,0,0"
+                    FontSize="16"
+                    Text="Already have an account?"
+                    TextColor="White"
+                    VerticalTextAlignment="Center" />
+                <Button
+                    BackgroundColor="Transparent"
+                    Command="{Binding NavigateToSignUpCommand}"
+                    FontSize="16"
+                    Text="SignUp"
+                    TextColor="Aquamarine" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+        <!--  מסך טעינה  -->
+        <Grid
+            HorizontalOptions="Fill"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Fill">
+
+            <!--  מסך טעינה  -->
+            <Grid
+                HorizontalOptions="Fill"
+                IsVisible="{Binding IsBusy}"
+                VerticalOptions="Fill">
+
+                <BoxView
+                    BackgroundColor="LightBlue"
+                    HorizontalOptions="Fill"
+                    Opacity="0.7"
+                    VerticalOptions="Fill" />
+
+                <ActivityIndicator
+                    IsRunning="True"
+                    WidthRequest="100"
+                    Color="Beige" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

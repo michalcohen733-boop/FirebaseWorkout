@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.AdminView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Admin"
+    BackgroundColor="#F9FAFB">
+
+    <VerticalStackLayout
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+
+        <!-- Title -->
+        <Label
+            Text="Admin Panel"
+            FontSize="28"
+            FontAttributes="Bold"
+            TextColor="#1F2937"
+            HorizontalOptions="Center"
+            Margin="0,40,0,8" />
+
+        <!-- Subtitle -->
+        <Label
+            Text="Select an option"
+            FontSize="14"
+            TextColor="#6B7280"
+            HorizontalOptions="Center"
+            Margin="0,0,0,32" />
+
+        <!-- Cards -->
+        <VerticalStackLayout Padding="20" Spacing="16" HorizontalOptions="Center">
+
+            <!-- Users List card -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="20"
+                WidthRequest="280">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToUsersListViewCommand}" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout>
+                    <Label
+                        Text="&#xe7fb;"
+                        FontFamily="MaterialIcons"
+                        FontSize="32"
+                        TextColor="#6366F1"
+                        VerticalOptions="Center" />
+                    <VerticalStackLayout
+                        Margin="16,0,0,0"
+                        HorizontalOptions="StartAndExpand"
+                        VerticalOptions="Center">
+                        <Label
+                            Text="Users List"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#1F2937" />
+                        <Label
+                            Text="Manage application users"
+                            FontSize="12"
+                            TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                    <Label
+                        Text="&#xe5cc;"
+                        FontFamily="MaterialIcons"
+                        FontSize="20"
+                        TextColor="#9CA3AF"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Service card -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="20"
+                WidthRequest="280">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ServiceCommand}" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout>
+                    <Label
+                        Text="&#xe871;"
+                        FontFamily="MaterialIcons"
+                        FontSize="32"
+                        TextColor="#8B5CF6"
+                        VerticalOptions="Center" />
+                    <VerticalStackLayout
+                        Margin="16,0,0,0"
+                        HorizontalOptions="StartAndExpand"
+                        VerticalOptions="Center">
+                        <Label
+                            Text="Service"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#1F2937" />
+                        <Label
+                            Text="View open issues"
+                            FontSize="12"
+                            TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                    <Label
+                        Text="&#xe5cc;"
+                        FontFamily="MaterialIcons"
+                        FontSize="20"
+                        TextColor="#9CA3AF"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>
