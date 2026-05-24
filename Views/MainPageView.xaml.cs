@@ -1,3 +1,4 @@
+using BarcodeScanning;
 using FirebaseWorkout.ViewModels;
 using Microsoft.Maui.ApplicationModel;
 
@@ -29,20 +30,25 @@ public partial class MainPageView : ContentPage
             return;
         }
 
-        await Task.Delay(500);
-        _vm.IsScanning = false;
-        await Task.Delay(100);
-        _vm.IsScanning = true;
+        cameraView.CameraEnabled = true;
     }
 
-    private void OnBarcodesDetected(object sender, ZXing.Net.Maui.BarcodeDetectionEventArgs e)
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        cameraView.CameraEnabled = false;
+    }
+
+    private void OnBarcodesDetected(object sender, OnDetectionFinishedEventArg e)
     {
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            if (e.Results?.Length > 0)
+            if (e.BarcodeResults?.Length > 0)
             {
-                string scannedCode = e.Results[0].Value;
+                cameraView.CameraEnabled = false;
+                string scannedCode = e.BarcodeResults[0].DisplayValue;
                 await _vm.HandleScannedCodeAsync(scannedCode);
+                cameraView.CameraEnabled = true;
             }
         });
     }

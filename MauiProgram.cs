@@ -5,7 +5,7 @@ using FirebaseWorkout.Service;
 using FirebaseWorkout.Service.DBService;
 using FirebaseWorkout.Service.DBService.Firebase;
 using Microsoft.Extensions.Logging;
-using ZXing.Net.Maui.Controls;
+using BarcodeScanning;
 
 namespace FirebaseWorkout
 {
@@ -16,7 +16,7 @@ namespace FirebaseWorkout
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseBarcodeReader()
+                .UseBarcodeScanning()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

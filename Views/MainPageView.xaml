@@ -3,8 +3,7 @@
     x:Class="FirebaseWorkout.Views.MainPageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
-    xmlns:zxingmodel="clr-namespace:ZXing.Net.Maui;assembly=ZXing.Net.Maui"
+    xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
     Title="Scan QR Code"
     BackgroundColor="#F9FAFB">
 
@@ -44,9 +43,12 @@
             Stroke="#E5E7EB"
             StrokeThickness="1"
             StrokeShape="RoundRectangle 16">
-            <zxing:CameraBarcodeReaderView
-                IsDetecting="{Binding IsScanning}"
-                BarcodesDetected="OnBarcodesDetected"
+            <scanner:CameraView
+                x:Name="cameraView"
+                CameraEnabled="True"
+                CameraFacing="Back"
+                BarcodeSymbologies="QRCode"
+                OnDetectionFinished="OnBarcodesDetected"
                 HeightRequest="400" />
         </Border>
 
