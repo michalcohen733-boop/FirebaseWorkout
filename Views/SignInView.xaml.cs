@@ -7,7 +7,13 @@ public partial class SignInView : ContentPage
 	public SignInView(SignInViewModel vm)
 	{
 		InitializeComponent();
-		vm.Navigation = this.Navigation;
 		BindingContext = vm;
+	}
+
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+		if (BindingContext is SignInViewModel vm)
+			vm.Navigation = this.Navigation;
 	}
 }

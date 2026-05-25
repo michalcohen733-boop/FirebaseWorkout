@@ -13,13 +13,13 @@
         VerticalOptions="Center"
         Spacing="16">
 
-        <!-- Title -->
-        <Label
-            Text="Issue Scanner"
-            FontSize="32"
-            FontAttributes="Bold"
-            TextColor="#1F2937"
-            HorizontalOptions="Center" />
+        <!-- Logo -->
+        <Image
+            Source="issue_scanner_logo.png"
+            HeightRequest="180"
+            Aspect="AspectFit"
+            HorizontalOptions="Center"
+            Margin="0,20,0,20" />
 
         <!-- Subtitle -->
         <Label

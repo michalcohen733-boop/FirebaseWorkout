@@ -28,6 +28,7 @@
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
+                IsVisible="{Binding ShowAccountAndLogout}"
                 Text="{Binding AccountIcon}"
                 TextColor="Black" />
 
@@ -64,6 +65,7 @@
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
+                IsVisible="{Binding ShowAccountAndLogout}"
                 Text="{Binding LogoutIcon}"
                 TextColor="Black" />
 

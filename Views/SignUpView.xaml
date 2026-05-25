@@ -29,7 +29,8 @@
                     TextColor="White" />
             </HorizontalStackLayout>
 
-            <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+            <ScrollView Grid.Row="1" Grid.Column="1">
+            <VerticalStackLayout>
 
                 <!--  שדה שם פרטי  -->
                 <Border
@@ -142,21 +143,25 @@
                 <HorizontalStackLayout
                     Margin="0,10,0,0"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center">
+                    Spacing="6">
 
                     <Label
-                        Margin="14,0,0,0"
-                        FontSize="16"
+                        FontSize="14"
                         Text="Already have an account?"
                         TextColor="White"
-                        VerticalTextAlignment="Center" />
+                        VerticalOptions="Center" />
 
-                    <Button
-                        BackgroundColor="Transparent"
-                        Command="{Binding NavigateToSignInCommand}"
+                    <Label
                         FontSize="16"
+                        FontAttributes="Bold"
                         Text="SignIn"
-                        TextColor="Aquamarine" />
+                        TextColor="Aquamarine"
+                        VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding NavigateToSignInCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
 
                 </HorizontalStackLayout>
 
@@ -170,6 +175,7 @@
                     TextColor="#ff4dd2" />
 
             </VerticalStackLayout>
+            </ScrollView>
         </Grid>
 
         <!--  מסך טעינה  -->

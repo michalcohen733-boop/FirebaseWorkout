@@ -8,6 +8,7 @@ using FirebaseWorkout.Service;
 using FirebaseWorkout.Service.DBService;
 using FirebaseWorkout.Service.DBService.Firebase;
 using FirebaseWorkout.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace FirebaseWorkout.ViewModels
 {
 	public partial class SignInViewModel : ObservableObject
 	{
-		private readonly Page _page;
+		private readonly IServiceProvider _services;
 		private readonly IAppUserRepository _dbService;
 
 		private string _userEmail;
@@ -84,16 +85,14 @@ namespace FirebaseWorkout.ViewModels
 
 		public ICommand SignInCommand { get; }
 
-		public SignInViewModel(SignUpView view, IAppUserRepository dbService)
+		public SignInViewModel(IServiceProvider services, IAppUserRepository dbService)
 		{
-			//Debug Mode
-
-			_userEmail = "konstant_z@yahoo.com";
-			_userPassword = "123456";
-			_page = view;
+			_services = services;
+			_userEmail = string.Empty;
+			_userPassword = string.Empty;
 			_isBusy = false;
-			_dbService = dbService;			
-			_isDebugMode = true;
+			_dbService = dbService;
+			_isDebugMode = false;
 			_entryAsPassword = true;
 			_passwordIconCode = FontHelper.OPEN_EYE_ICON;
 			SignInCommand = new Command(SignIn, () =>
@@ -113,9 +112,19 @@ namespace FirebaseWorkout.ViewModels
 				//Set CurrentUser
 				(App.Current as App)!.CurrentUser = user;
 
-				// Navigate to Main Page of Shell
+				// Navigate to Shell
 				var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
-				Application.Current!.Windows[0].Page = mainPage;		
+				Application.Current!.Windows[0].Page = mainPage;
+
+				// Navigate to role-based start page
+				if (user.IsAdmin)
+				{
+					await Shell.Current.GoToAsync("AdminView");
+				}
+				else if (user.IsServicePerson)
+				{
+					await Shell.Current.GoToAsync("ServicePageView");
+				}		
 			}
 			catch (Exception ex)
 			{
@@ -139,11 +148,18 @@ namespace FirebaseWorkout.ViewModels
 		{
 			try
 			{
-				await Navigation!.PushAsync(_page);
+				if (Navigation == null) return;
+
+				var signUpView = _services.GetService<SignUpView>();
+				if (signUpView != null)
+				{
+					await Navigation.PushAsync(signUpView);
+				}
 			}
 			catch (Exception ex)
 			{
-				var message = ex.Message;
+				System.Diagnostics.Debug.WriteLine(
+					$"Navigate to SignUp failed: {ex.Message}");
 			}
 		}		
 		private void ShowErrorMessage(string message)

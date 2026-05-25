@@ -40,13 +40,6 @@
                 Text="{Binding ErrorMessage}"
                 TextColor="#ff4dd2" />
 
-            <!--  Debug Mode Message  -->
-            <Label
-                FontSize="20"
-                IsVisible="{Binding IsDebugMode}"
-                Text="Debug Mode!"
-                TextColor="#66ff66" />
-
             <!--  Email Entry  -->
             <Border
                 Padding="10"

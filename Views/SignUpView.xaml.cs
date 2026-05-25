@@ -6,8 +6,14 @@ public partial class SignUpView : ContentPage
 {
 	public SignUpView(SignUpViewModel vm)
 	{
-		InitializeComponent();		
-		vm.Navigation = this.Navigation;
+		InitializeComponent();
 		BindingContext = vm;
+	}
+
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+		if (BindingContext is SignUpViewModel vm)
+			vm.Navigation = this.Navigation;
 	}
 }

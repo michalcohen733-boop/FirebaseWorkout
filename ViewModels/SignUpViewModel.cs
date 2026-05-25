@@ -6,6 +6,7 @@ using FirebaseWorkout.Model;
 using FirebaseWorkout.Service.DBService;
 using FirebaseWorkout.Service.DBService.Firebase;
 using FirebaseWorkout.Views;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,9 @@ namespace FirebaseWorkout.ViewModels
 {
 	public partial class SignUpViewModel : ObservableObject
 	{
-		private AppUser? newUser;		
+		private AppUser? newUser;
 		private readonly IAppUserRepository _dbService;
+		private readonly IServiceProvider _services;
 
 		private string _fName;
 		private string _lName;
@@ -114,9 +116,10 @@ namespace FirebaseWorkout.ViewModels
 
 		#endregion
 
-		public SignUpViewModel(IAppUserRepository dbService) 		
+		public SignUpViewModel(IServiceProvider services, IAppUserRepository dbService)
 		{
-			_isBusy = false;			
+			_services = services;
+			_isBusy = false;
 			_dbService = dbService;
 			_entryAsPassword = true;
 			_passwordIconCode = FontHelper.OPEN_EYE_ICON;
@@ -178,11 +181,18 @@ namespace FirebaseWorkout.ViewModels
 		{
 			try
 			{
-				await Navigation!.PopAsync();
+				if (Navigation == null) return;
+
+				var signInView = _services.GetService<SignInView>();
+				if (signInView != null)
+				{
+					await Navigation.PushAsync(signInView);
+				}
 			}
 			catch (Exception ex)
 			{
-				//error
+				System.Diagnostics.Debug.WriteLine(
+					$"Navigate to SignIn failed: {ex.Message}");
 			}
 		}
 		private bool Validate()

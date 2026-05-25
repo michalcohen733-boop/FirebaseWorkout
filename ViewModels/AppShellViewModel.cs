@@ -25,6 +25,12 @@ namespace FirebaseWorkout.ViewModels
 		public bool? _canSeeService = false;
 
 		[ObservableProperty]
+		public bool? _isGuest = false;
+
+		[ObservableProperty]
+		public bool? _showAccountAndLogout = true;
+
+		[ObservableProperty]
 		private string _logoutIcon;
 
 		[ObservableProperty]
@@ -42,9 +48,12 @@ namespace FirebaseWorkout.ViewModels
 		public AppShellViewModel(SignInView signInView)
 		{
 			_page = signInView;
-			_isAdmin = (App.Current as App)?.CurrentUser?.IsAdmin ?? false;
-			_isServicePerson = (App.Current as App)?.CurrentUser?.IsServicePerson ?? false;
+			var currentUser = (App.Current as App)?.CurrentUser;
+			_isAdmin = currentUser?.IsAdmin ?? false;
+			_isServicePerson = currentUser?.IsServicePerson ?? false;
 			_canSeeService = (_isAdmin ?? false) || (_isServicePerson ?? false);
+			_isGuest = currentUser == null || string.IsNullOrEmpty(currentUser.Id);
+			_showAccountAndLogout = !(_isGuest ?? true);
 			_logoutIcon = FontHelper.LOGOUT_ICON;
 			_adminIcon = FontHelper.ADMIN_ICON;
 			_serviceIcon = FontHelper.ADMIN_ICON;
