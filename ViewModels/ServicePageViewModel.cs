@@ -6,20 +6,29 @@ using System.Collections.ObjectModel;
 
 namespace FirebaseWorkout.ViewModels
 {
+    // ViewModel של מסך שירות - מציג רשימת דיווחים פתוחים בזמן אמת
+    // נגיש ל-Admin ול-ServicePerson (אב בית)
     public partial class ServicePageViewModel : ObservableObject
     {
+        // Repository דיווחים
         private readonly IReportRepository _reportRepo;
+        // שירות התראות
         private readonly IAlertService _alertService;
+        // שירות לוגים
         private readonly IAppLogger _appLogger;
 
+        // מנוי לעדכונים בזמן אמת מ-Firebase (Rx Observable)
         private IDisposable? _subscription;
 
+        // רשימת הדיווחים הפתוחים (מוצגת ב-CollectionView)
         [ObservableProperty]
         private ObservableCollection<Report> _reports;
 
+        // טקסט מונה דיווחים: "3 reports"
         [ObservableProperty]
         private string _reportsCount = "0 reports";
 
+        // הקונסטרקטור מקבל שירותים דרך DI
         public ServicePageViewModel(
             IReportRepository reportRepo,
             IAlertService alertService,
@@ -31,6 +40,7 @@ namespace FirebaseWorkout.ViewModels
             Reports = new ObservableCollection<Report>();
         }
 
+        // טוען דיווחים פתוחים מ-Firebase ומעדכן את הרשימה
         public async Task LoadReportsAsync()
         {
             try
@@ -48,6 +58,7 @@ namespace FirebaseWorkout.ViewModels
             }
         }
 
+        // הרשמה לעדכונים בזמן אמת - כל שינוי ב-Firebase טוען מחדש את הרשימה
         public void SubscribeToChanges()
         {
             try
@@ -64,12 +75,15 @@ namespace FirebaseWorkout.ViewModels
             }
         }
 
+        // ביטול ההרשמה לעדכונים (כשיוצאים מהמסך)
         public void UnsubscribeFromChanges()
         {
             _subscription?.Dispose();
             _subscription = null;
         }
 
+        // טיפול בלחיצה על דיווח - מציע לסגור אותו
+        // מציג Alert עם אישור ומעדכן את הסטטוס ל-Closed
         public async Task HandleReportSelectedAsync(Report report)
         {
             bool answer = await Shell.Current.DisplayAlert(
@@ -94,6 +108,7 @@ namespace FirebaseWorkout.ViewModels
             }
         }
 
+        // עדכון טקסט מונה הדיווחים
         private void UpdateCount()
         {
             ReportsCount = Reports.Count == 1

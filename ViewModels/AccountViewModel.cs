@@ -14,45 +14,61 @@ using System.Threading.Tasks;
 
 namespace FirebaseWorkout.ViewModels
 {
+	// ViewModel של מסך חשבון - מציג ומאפשר עריכת פרטי המשתמש
+	// מממש IQueryAttributable - יכול לקבל משתמש מרשימת המשתמשים (מנהל) או להציג את המשתמש הנוכחי
 	public partial class AccountViewModel : ObservableObject, IQueryAttributable
 	{
+		// שירות התראות
 		IAlertService _alertService;
+		// Repository משתמשים
 		private readonly IAppUserRepository _dbService;
 
 		#region Fields
+		// שם פרטי
 		[ObservableProperty]
 		private string _firstName;
 
+		// שם משפחה
 		[ObservableProperty]
 		private string _lastName;
 
+		// כתובת אימייל
 		[ObservableProperty]
 		private string _userEmail;
 
+		// מספר טלפון נייד
 		[ObservableProperty]
 		private string _userMobile;
 
+		// משתמש שהתקבל מרשימת המשתמשים (מסך מנהל), או null אם זה המשתמש הנוכחי
 		[ObservableProperty]
-		private AppUser _recievedUser; // Used to receive user details from the UsersListPage
+		private AppUser _recievedUser;
 
+		// האם להציג כפתור מחיקה (רק אם מנהל צופה במשתמש אחר)
 		[ObservableProperty]
 		private bool _isDeleteButtonVisible;
 
+		// אייקון מחיקה
 		[ObservableProperty]
 		private string _deleteIcon;
 
+		// האם להציג הודעת שגיאה
 		[ObservableProperty]
 		private bool _errorMessageIsVisible;
 
+		// הודעת שגיאה
 		[ObservableProperty]
 		private string _errorMessage;
 
+		// האם מציג מסך טעינה
 		[ObservableProperty]
 		private bool _isBusy;
 
+		// תמונת משתמש בפורמט Base64
 		[ObservableProperty]
-		private string _userImageBase64; // Base64 string for the user image	
+		private string _userImageBase64;
 
+		// מקור התמונה להצגה ב-UI
 		[ObservableProperty]
 		private ImageSource _userImageSource;
 		#endregion
@@ -64,7 +80,8 @@ namespace FirebaseWorkout.ViewModels
 		//});
 
 
-		public AccountViewModel(IAppUserRepository dbService, IAlertService alertService) 
+		// הקונסטרקטור מקבל שירותים דרך DI
+		public AccountViewModel(IAppUserRepository dbService, IAlertService alertService)
 		{	
 			_alertService = alertService;
 			_dbService = dbService;
@@ -80,6 +97,7 @@ namespace FirebaseWorkout.ViewModels
 			}		
 		}
 
+		// מחיקת משתמש - מציג אישור ומוחק מ-Firebase Auth ו-Database
 		[RelayCommand]
 		private async Task Delete()
 		{
@@ -107,6 +125,7 @@ namespace FirebaseWorkout.ViewModels
 			}
 		}
 
+		// עדכון פרטי משתמש ב-Firebase - כולל אימות קלט
 		[RelayCommand]
 		private async Task Update()
 		{
@@ -156,7 +175,7 @@ namespace FirebaseWorkout.ViewModels
 			// Implement get user image functionality here
 		}
 
-		//AccountViewModel Entry Point
+		// נקודת כניסה - מקבל משתמש מרשימת המשתמשים (מנהל) או טוען את המשתמש הנוכחי
 		public void ApplyQueryAttributes(IDictionary<string, object> query)
 		{
 			RecievedUser = query.ContainsKey("selectedUser") ? (AppUser)query["selectedUser"] : null;
@@ -172,7 +191,8 @@ namespace FirebaseWorkout.ViewModels
 				LoadUserDetails((App.Current as App)!.CurrentUser!);
 			}
 		}
-		private void LoadUserDetails(AppUser user) 
+		// טעינת פרטי המשתמש לשדות ה-UI
+		private void LoadUserDetails(AppUser user)
 		{
 			FirstName = user.FirstName!;
 			LastName = user.LastName!;

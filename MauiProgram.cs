@@ -9,21 +9,26 @@ using BarcodeScanning;
 
 namespace FirebaseWorkout
 {
+    // נקודת הכניסה של האפליקציה - הגדרת MAUI, DI, פונטים וסריקת ברקודים
     public static class MauiProgram
     {
+        // בניית האפליקציה - הגדרת כל הרכיבים
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                // הפעלת ספריית סריקת ברקודים (BarcodeScanning.Native.Maui)
                 .UseBarcodeScanning()
+                // רישום פונטים - OpenSans + Material Icons לאייקונים
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold"); 
+                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 					fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
 				});
 
+            // רישום כל הרכיבים ב-DI (Dependency Injection)
             #region Dependency Injection for Views, ViewModels and Services
             builder.RegisterViews()
                    .RegisterViewModels()
@@ -37,9 +42,9 @@ namespace FirebaseWorkout
             return builder.Build();
         }
 
+        // רישום כל ה-Views כ-Transient (נוצרים מחדש בכל פעם)
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
-            // Register ViewModels for Dependency Injection
             builder.Services.AddTransient<AppShell>();
             builder.Services.AddTransient<Views.HomePageView>();
 			builder.Services.AddTransient<Views.SignInView>();
@@ -53,9 +58,9 @@ namespace FirebaseWorkout
             builder.Services.AddTransient<Views.UpdateUserView>();
 			return builder;
         }
+        // רישום כל ה-ViewModels כ-Transient
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
-            // Register ViewModels for Dependency Injection
             builder.Services.AddTransient<ViewModels.AppShellViewModel>();
             builder.Services.AddTransient<ViewModels.HomePageViewModel>();
             builder.Services.AddTransient<ViewModels.SignInViewModel>();
@@ -69,11 +74,14 @@ namespace FirebaseWorkout
             builder.Services.AddTransient<ViewModels.UpdateUserViewModel>();
 			return builder;
         }
+        // רישום שירותים - Singleton לשירותים משותפים, Transient ל-Repositories
         public static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
         {
+            // שירותים משותפים (Singleton - מופע אחד לכל האפליקציה)
             builder.Services.AddSingleton<IAppLogger,LogService>();
             builder.Services.AddSingleton<IAlertService, AlertService>();
             builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
+            // Repositories (Transient - מופע חדש בכל בקשה)
             builder.Services.AddTransient<IAppUserRepository, FirebaseUsersRepository>();
             builder.Services.AddTransient<IComputerRepository, FirebaseComputersRepository>();
             builder.Services.AddTransient<IReportRepository, FirebaseReportsRepository>();

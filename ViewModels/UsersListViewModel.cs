@@ -17,30 +17,43 @@ using System.Threading.Tasks;
 
 namespace FirebaseWorkout.ViewModels
 {
+	// ViewModel של רשימת משתמשים (מסך מנהל) - מציג כל המשתמשים בזמן אמת
+	// מאזין לשינויים ב-Firebase ומעדכן אוטומטית
 	public partial class UsersListViewModel : ObservableObject
 	{
+		// שירות לוגים
 		private readonly IAppLogger _appLogger;
+		// שירות התראות
 		private readonly IAlertService _alertService;
+		// Repository משתמשים
 		private readonly IAppUserRepository _dbService;
 
-		IDisposable? _dbSubscription; // Cancel subscription to db updates when not needed
-		private List<AppUser> _allUsers = new(); //List of users to be displayed
+		// מנוי לעדכונים בזמן אמת מ-Firebase
+		IDisposable? _dbSubscription;
+		// רשימת משתמשים פנימית (מקור נתונים)
+		private List<AppUser> _allUsers = new();
+		// רשימה שמוצגת ב-UI (ObservableCollection מעדכנת את ה-View)
 		public ObservableCollection<AppUser> AllUsers { get; set; }
 
+		// המשתמש שנבחר ברשימה
 		[ObservableProperty]
 		private AppUser? _selectedUser;
 
+		// האם מציג מסך טעינה
 		[ObservableProperty]
 		private bool _isBusy;
 
+		// אייקון סינון
 		[ObservableProperty]
 		private string _filterIcon;
 
+		// טקסט חיפוש
 		[ObservableProperty]
 		private string _searchText;
 
 		//public Command? GetAllUsersCommand { get { return new Command(GetUsersListFromDB); } }
 
+		// הקונסטרקטור מקבל שירותים דרך DI
 		public UsersListViewModel(IAlertService alertService, IAppUserRepository dbService, IAppLogger appLogger)
 		{
 			_appLogger = appLogger;
@@ -64,6 +77,7 @@ namespace FirebaseWorkout.ViewModels
 			throw new NotImplementedException();
 		}
 
+		// ניווט למסך עריכת משתמש - מעביר את המשתמש הנבחר
 		[RelayCommand]
 		private async Task NavigateToAccountPage()
 		{
@@ -75,6 +89,7 @@ namespace FirebaseWorkout.ViewModels
 			}
 		}
 
+		// הרשמה לעדכונים בזמן אמת מ-Firebase - מעדכן רשימה כשמשתמש נוסף/נערך/נמחק
 		private async Task SubscribeToDbUpdates()
 		{
 			if (_dbSubscription != null) CancelDbSubscription();
@@ -101,6 +116,7 @@ namespace FirebaseWorkout.ViewModels
 				ex => _appLogger.LogDebug($"Error: {ex.Message}"));
 		}
 
+		// מעדכן את ה-ObservableCollection מהרשימה הפנימית
 		private void FillUsersList()
 		{
 			AllUsers.Clear(); // Clear the existing collection
@@ -110,6 +126,7 @@ namespace FirebaseWorkout.ViewModels
 			}			
 		}
 
+		// הוספה או עדכון של משתמש ברשימה הפנימית
 		private void AddOrUpdateUser(AppUser item)
 		{
 			//Check if user already exists in the list
@@ -125,6 +142,7 @@ namespace FirebaseWorkout.ViewModels
 			}
 		}
 
+		// הסרת משתמש מהרשימה הפנימית לפי ID
 		private void RemoveUser(string userId)
 		{
 			//bool confirm = await Shell.Current.DisplayAlert("Firebase App", "Remove User?", "Yes","No");
@@ -135,12 +153,14 @@ namespace FirebaseWorkout.ViewModels
 			}
 		}
 		
+		// ביטול ההרשמה לעדכוני Firebase
 		private void CancelDbSubscription()
 		{
 			_dbSubscription?.Dispose();
 			_dbSubscription = null;
 		}
 
+		// נקרא כשהמסך מופיע - מנקה ונרשם לעדכונים
 		internal async void OnAppearing()
 		{
 			//Clear existing users list before subscribing to db updates
@@ -149,6 +169,7 @@ namespace FirebaseWorkout.ViewModels
 			SelectedUser = null!;
 		}
 
+		// נקרא כשיוצאים מהמסך - מבטל הרשמה לעדכונים
 		internal void OnDisappearing()
 		{
 			CancelDbSubscription();

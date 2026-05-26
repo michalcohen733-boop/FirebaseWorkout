@@ -9,16 +9,21 @@ using System.Threading.Tasks;
 
 namespace FirebaseWorkout.Service.DBService.Firebase
 {
+	// שירות אימות Firebase - מנהל כניסה, הרשמה ומחיקת משתמשים
+	// מממש את IAuthService ומתקשר עם Firebase Authentication
 	internal class FirebaseAuthService : IAuthService
 	{
+		// לקוח Firebase Auth לביצוע פעולות אימות
 		private FirebaseAuthClient? _authClient;
+		// שירות לוגים לרישום פעולות ושגיאות
 		private IAppLogger _logger;
 
+		// הקונסטרקטור מאתחל את חיבור Firebase Auth עם מפתח API
 		public FirebaseAuthService(IAppLogger logger)
 		{
 			_logger = logger;
 
-			// Initialize Firebase Authentication Client
+			// הגדרת Firebase Auth עם מפתח API ודומיין
 			var config = new FirebaseAuthConfig()
 			{
 				ApiKey = "AIzaSyCZokKmPLS4tTHMvwXQ9GUkcDazSHzNCwg",
@@ -33,19 +38,23 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 			_logger = logger;
 		}
 
+		// כניסה עם אימייל וסיסמה - מחזיר את ה-UID של המשתמש
 		public async Task<string> SignIn(string userEmail, string userPassword)
 		{
 			string errorMessage = string.Empty;
 			try
 			{
+				// ניסיון כניסה מול Firebase Auth
 				await _authClient!.SignInWithEmailAndPasswordAsync(userEmail, userPassword);
+				// החזרת מזהה המשתמש הייחודי
 				return _authClient.User.Info.Uid;
 			}
 			catch (FirebaseAuthException ex)
 			{
+				// טיפול בשגיאת אימייל/סיסמה שגויים
 				if (ex.Message.Contains("INVALID_LOGIN_CREDENTIALS"))
 				{
-					errorMessage = "Incorrect email or password!"; //"אימייל או סיסמה אינם נכונים";
+					errorMessage = "Incorrect email or password!";
 					_logger.LogDebug($" SignInAuth failed: {userEmail} {userPassword}, {errorMessage}");
 				}
 				else
@@ -61,11 +70,13 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception("SignIn failed!");
 			}
 
-		}		
+		}
+		// יצירת משתמש חדש ב-Firebase Auth - מחזיר את ה-UID
 		public async Task<string> CreateAuth(string userEmail, string userPassword)
 		{
 			try
 			{
+				// יצירת משתמש חדש עם אימייל וסיסמה
 				await _authClient!.CreateUserWithEmailAndPasswordAsync(userEmail, userPassword);
 				_logger.LogDebug($"AppUser Auth {userEmail} created successfully");
 				return _authClient.User.Uid;
@@ -74,14 +85,17 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 			{
 				string errorMessage = string.Empty;
 
-				if (ex.Message.Contains("INVALID_EMAIL")) //Email failed validation - not real email
+				// בדיקת סוג השגיאה - אימייל לא תקין
+				if (ex.Message.Contains("INVALID_EMAIL"))
 				{
 					errorMessage = "Invalid email adress!";
 				}
+				// בדיקת סוג השגיאה - אימייל כבר קיים
 				if (ex.Message.Contains("EMAIL_EXISTS"))
 				{
 					errorMessage = "This email already exists!";
 				}
+				// בדיקת סוג השגיאה - סיסמה חלשה
 				if (ex.Message.Contains("WEAK_PASSWORD"))
 				{
 					errorMessage = "Weak password!";
@@ -109,15 +123,17 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				return "SignUp new user failed!";
 			}
 		}
+		// מחיקת משתמש מ-Firebase Auth
+		// דורש כניסה מחדש של המנהל אחרי המחיקה
 		public async Task RemoveAuth(string userEmail, string userPassword)
 		{
 			try
 			{
-				//1 Authenticate the user to be deleted
+				// שלב 1: כניסה עם המשתמש שרוצים למחוק
 				await _authClient!.SignInWithEmailAndPasswordAsync(userEmail, userPassword);
-				//2 Delete the authenticated user
+				// שלב 2: מחיקת המשתמש מ-Auth
 				await _authClient.User.DeleteAsync();
-				//3 Re-authenticate the previous logged in user
+				// שלב 3: כניסה מחדש עם המשתמש המחובר (המנהל)
 				await _authClient!.SignInWithEmailAndPasswordAsync(
 					(App.Current as App)!.CurrentUser!.UserEmail,
 					(App.Current as App)!.CurrentUser!.UserPassword);

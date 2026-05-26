@@ -20,15 +20,22 @@ using System.Windows.Input;
 
 namespace FirebaseWorkout.ViewModels
 {
+	// ViewModel של מסך ההתחברות - מנהל כניסה עם אימייל וסיסמה
+	// אחרי כניסה מוצלחת מנווט לדף לפי תפקיד: Admin/ServicePerson/רגיל
 	public partial class SignInViewModel : ObservableObject
 	{
+		// ספק שירותים ליצירת Views בצורה Lazy (מונע Circular Dependency)
 		private readonly IServiceProvider _services;
+		// שירות משתמשים לביצוע כניסה
 		private readonly IAppUserRepository _dbService;
 
+		// כתובת אימייל שהמשתמש מקליד
 		private string _userEmail;
+		// סיסמה שהמשתמש מקליד
 		private string _userPassword;
 
 		#region Properties
+		// כתובת אימייל - מעדכן את זמינות כפתור SignIn בכל שינוי
 		public string UserEmail
 		{
 			get => _userEmail;
@@ -43,6 +50,7 @@ namespace FirebaseWorkout.ViewModels
 				}
 			}
 		}
+		// סיסמה - מעדכנת את זמינות כפתור SignIn בכל שינוי
 		public string UserPassword
 		{
 			get => _userPassword;
@@ -55,36 +63,45 @@ namespace FirebaseWorkout.ViewModels
 					(SignInCommand as Command).ChangeCanExecute();
 				}
 			}
-		}	
+		}
 
+		// אייקון עין לצפייה/הסתרה של הסיסמה
 		[ObservableProperty]
 		private string _passwordIconCode;
 
+		// האם שדה הסיסמה מוסתר (נקודות)
 		[ObservableProperty]
 		private bool _entryAsPassword;
 
+		// האם להציג הודעת שגיאה
 		[ObservableProperty]
 		private bool _signInMessageVisible;
 
+		// האם "זכור אותי" מסומן
 		[ObservableProperty]
 		private bool _isRememberMeChecked;
 
+		// מצב דיבאג (כבוי בייצור)
 		[ObservableProperty]
 		private bool _isDebugMode;
 
+		// הודעת שגיאה למשתמש
 		[ObservableProperty]
 		private string _errorMessage;
 
+		// האם מציג מסך טעינה
 		[ObservableProperty]
 		private bool _isBusy;
 
+		// אובייקט ניווט - מוגדר ב-OnAppearing של ה-View
 		public INavigation Navigation { get; set; }
 
-		//public string Name => "Wellcome " + _authClient.User?.Info?.DisplayName!;		
 		#endregion
 
+		// פקודת כניסה - פעילה רק כשאימייל וסיסמה מלאים
 		public ICommand SignInCommand { get; }
 
+		// הקונסטרקטור מקבל IServiceProvider (במקום View ישירות) ו-Repository
 		public SignInViewModel(IServiceProvider services, IAppUserRepository dbService)
 		{
 			_services = services;
@@ -95,28 +112,31 @@ namespace FirebaseWorkout.ViewModels
 			_isDebugMode = false;
 			_entryAsPassword = true;
 			_passwordIconCode = FontHelper.OPEN_EYE_ICON;
+			// כפתור SignIn פעיל רק כשהשדות מלאים
 			SignInCommand = new Command(SignIn, () =>
-				!(string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword)));						
+				!(string.IsNullOrEmpty(UserEmail) || string.IsNullOrEmpty(UserPassword)));
 		}
 
+		// ביצוע כניסה - מאמת מול Firebase ומנווט לפי תפקיד
 		private async void SignIn()
 		{
-			//Show Progress Bar
+			// הצגת מסך טעינה
 			IsBusy = true;
 			try
 			{
+				// אימות מול Firebase Auth + שליפת פרטי המשתמש
 				var user = await _dbService.SignInAsync(UserEmail!, UserPassword!);
-				
+
 				IsBusy = false;
 
-				//Set CurrentUser
+				// שמירת המשתמש המחובר באפליקציה
 				(App.Current as App)!.CurrentUser = user;
 
-				// Navigate to Shell
+				// מעבר מ-NavigationPage ל-Shell (הדף הראשי של האפליקציה)
 				var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
 				Application.Current!.Windows[0].Page = mainPage;
 
-				// Navigate to role-based start page
+				// ניווט לדף ההתחלתי לפי תפקיד המשתמש
 				if (user.IsAdmin)
 				{
 					await Shell.Current.GoToAsync("AdminView");
@@ -124,7 +144,8 @@ namespace FirebaseWorkout.ViewModels
 				else if (user.IsServicePerson)
 				{
 					await Shell.Current.GoToAsync("ServicePageView");
-				}		
+				}
+				// משתמש רגיל נשאר ב-MainPageView (ברירת מחדל של Shell)
 			}
 			catch (Exception ex)
 			{
@@ -133,6 +154,7 @@ namespace FirebaseWorkout.ViewModels
 			}
 		}
 
+		// הצגה/הסתרה של הסיסמה (לחיצה על אייקון העין)
 		[RelayCommand]
 		private void TogglePassword()
 		{
@@ -143,6 +165,7 @@ namespace FirebaseWorkout.ViewModels
 				PasswordIconCode = FontHelper.CLOSED_EYE_ICON;
 		}
 
+		// ניווט למסך ההרשמה - יוצר SignUpView דרך DI (Lazy)
 		[RelayCommand]
 		private async Task NavigateToSignUp()
 		{
@@ -150,6 +173,7 @@ namespace FirebaseWorkout.ViewModels
 			{
 				if (Navigation == null) return;
 
+				// יצירת SignUpView דרך ServiceProvider (מונע Circular Dependency)
 				var signUpView = _services.GetService<SignUpView>();
 				if (signUpView != null)
 				{
@@ -161,7 +185,8 @@ namespace FirebaseWorkout.ViewModels
 				System.Diagnostics.Debug.WriteLine(
 					$"Navigate to SignUp failed: {ex.Message}");
 			}
-		}		
+		}
+		// הצגת הודעת שגיאה למשתמש
 		private void ShowErrorMessage(string message)
 		{
 			SignInMessageVisible = true;

@@ -11,22 +11,30 @@ using System.Threading.Tasks;
 
 namespace FirebaseWorkout.Service.DBService.Firebase
 {
+	// Repository של משתמשים - אחראי על כל הפעולות של משתמשים
+	// מול Firebase Auth (אימות) ו-Realtime Database (נתונים)
 	public class FirebaseUsersRepository : FirebaseRealtimeService, IAppUserRepository
 	{
-		private IAuthService _authService;		
+		// שירות אימות לכניסה/הרשמה/מחיקה מ-Firebase Auth
+		private IAuthService _authService;
+		// שירות לוגים
 		private IAppLogger _appLogger;
 
+		// הקונסטרקטור מקבל שירותים דרך DI
 		public FirebaseUsersRepository(IAuthService authService, IAppLogger appLogger)
 		{
 			_authService = authService;
 			_appLogger = appLogger;
 		}
 
+		// כניסה למערכת - מאמת מול Auth ושולף את פרטי המשתמש מ-Database
 		public async Task<AppUser> SignInAsync(string userEmail, string userPassword)
 		{
 			try
 			{
+				// שלב 1: אימות מול Firebase Auth - מקבל את ה-User ID
 				string userId = await _authService.SignIn(userEmail, userPassword);
+				// שלב 2: שליפת פרטי המשתמש מ-Realtime Database
 				AppUser appUser = await GetUserByIdAsync(userId);
 				_appLogger.LogDebug($"FirebaseUsersRepository {userEmail} SignIn successfully");
 				return appUser;
@@ -40,12 +48,15 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception(ex.Message);
 			}
 		}
+		// הרשמת משתמש חדש - יוצר ב-Auth וגם שומר ב-Database
 		public async Task<string> CreateAsync(AppUser appUser)
 		{
 			try
 			{
+				// שלב 1: יצירת המשתמש ב-Firebase Auth
 				string userId = await _authService.CreateAuth(appUser.UserEmail!, appUser.UserPassword!);
 				appUser.Id = userId;
+				// שלב 2: שמירת פרטי המשתמש ב-Realtime Database
 				await RegisterAppUser(appUser);
 				_appLogger.LogDebug($"FirebaseUsersRepository {appUser.UserEmail} SignUp successfully");
 				return userId;
@@ -59,6 +70,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception("SignUp new user failed!");
 			}
 		}
+		// מחיקת משתמש - גם מ-Auth וגם מ-Database
 		public async Task DeleteAsync(AppUser appUser)
 		{
 			try
@@ -83,6 +95,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 		{
 			throw new NotImplementedException();
 		}
+		// שליפת משתמש לפי מזהה מ-Realtime Database
 		public async Task<AppUser> GetUserByIdAsync(string userId)
 		{
 			string errorMessage = string.Empty;
@@ -148,6 +161,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 			//	userMessage = "הנתיב בבסיס הנתונים לא נמצא.";
 			//}
 		}
+		// עדכון פרטי משתמש (שם, טלפון) ב-Database
 		public async Task UpdateAsync(AppUser appUser)
 		{
 			try
@@ -168,6 +182,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception("Update failed!");
 			}
 		}
+		// שמירת אובייקט משתמש ב-Realtime Database תחת users/[id]
 		public async Task RegisterAppUser(AppUser appUser)
 		{
 			try
@@ -195,6 +210,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception("RealTimeDB add new user failed");
 			}
 		}
+		// הפיכת משתמש למנהל - מעדכן רק את שדה IsAdmin ל-true
 		public async Task SetToAdmin(string userId)
 		{
 			try
@@ -212,6 +228,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception("SetToAdmin failed!");
 			}
 		}
+		// שליפת כל המשתמשים מ-Database עם מיפוי שדות מפורש
 		public async Task<List<AppUser>> GetAllUserAsync()
 		{
 			try
@@ -240,6 +257,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				return new List<AppUser>();
 			}
 		}
+		// הרשמה לעדכונים בזמן אמת על שינויי משתמשים (Rx Observable)
 		public IObservable<FirebaseEvent<AppUser>> SubscribeToUserChanges()
 		{
 			try

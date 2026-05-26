@@ -17,12 +17,18 @@ using System.Windows.Input;
 
 namespace FirebaseWorkout.ViewModels
 {
+	// ViewModel של מסך ההרשמה - מנהל יצירת משתמש חדש
+	// כולל שדות שם, אימייל, סיסמה, טלפון ואימות קלט
 	public partial class SignUpViewModel : ObservableObject
 	{
+		// אובייקט המשתמש החדש שנוצר בהרשמה
 		private AppUser? newUser;
+		// שירות משתמשים ליצירת חשבון
 		private readonly IAppUserRepository _dbService;
+		// ספק שירותים ליצירת Views בצורה Lazy
 		private readonly IServiceProvider _services;
 
+		// שדות ההרשמה
 		private string _fName;
 		private string _lName;
 		private string _uEmail;
@@ -30,6 +36,7 @@ namespace FirebaseWorkout.ViewModels
 		private string _uMobile;
 
 		#region Properties
+		// אובייקט ניווט - מוגדר ב-OnAppearing
 		public INavigation Navigation { get; set; }
 		public string FName
 		{
@@ -116,6 +123,7 @@ namespace FirebaseWorkout.ViewModels
 
 		#endregion
 
+		// הקונסטרקטור מקבל IServiceProvider ו-Repository דרך DI
 		public SignUpViewModel(IServiceProvider services, IAppUserRepository dbService)
 		{
 			_services = services;
@@ -123,14 +131,17 @@ namespace FirebaseWorkout.ViewModels
 			_dbService = dbService;
 			_entryAsPassword = true;
 			_passwordIconCode = FontHelper.OPEN_EYE_ICON;
+			// כפתור SignUp פעיל רק כשכל השדות תקינים (Validate)
 			SignUpCommand = new Command(SignUp, Validate);
 		}
 
+		// ביצוע הרשמה - יוצר משתמש ב-Firebase ומנווט ל-Shell
 		private async void SignUp()
 		{
-			//Show Progress Bar
+			// הצגת מסך טעינה
 			IsBusy = true;
 
+			// בניית אובייקט משתמש חדש מהשדות שהוזנו
 			newUser = new AppUser()
 			{				
 				FirstName = FName,
@@ -144,6 +155,7 @@ namespace FirebaseWorkout.ViewModels
 
 			try
 			{
+				// שליחת המשתמש ל-Firebase Auth + Database
 				newUser.Id = await _dbService!.CreateAsync(newUser);
 
 				//Set as admin
@@ -152,10 +164,10 @@ namespace FirebaseWorkout.ViewModels
 
 				IsBusy = false;
 
-				//Set CurrentUser
+				// שמירת המשתמש המחובר באפליקציה
 				(App.Current as App)!.CurrentUser = newUser;
 
-				// Navigate to Main Page
+				// מעבר ל-Shell (הדף הראשי)
 				var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
 				Application.Current!.Windows[0].Page = mainPage;
 			}
@@ -176,6 +188,7 @@ namespace FirebaseWorkout.ViewModels
 				PasswordIconCode = FontHelper.CLOSED_EYE_ICON;
 		}
 
+		// ניווט למסך ההתחברות - יוצר SignInView דרך DI (Lazy)
 		[RelayCommand]
 		private async Task NavigateToSignIn()
 		{
@@ -183,6 +196,7 @@ namespace FirebaseWorkout.ViewModels
 			{
 				if (Navigation == null) return;
 
+				// יצירת SignInView דרך ServiceProvider (מונע Circular Dependency)
 				var signInView = _services.GetService<SignInView>();
 				if (signInView != null)
 				{
@@ -195,6 +209,7 @@ namespace FirebaseWorkout.ViewModels
 					$"Navigate to SignIn failed: {ex.Message}");
 			}
 		}
+		// אימות קלט - בודק שכל השדות מלאים ותקינים
 		private bool Validate()
 		{
 			var fnameOK = !string.IsNullOrEmpty(FName);

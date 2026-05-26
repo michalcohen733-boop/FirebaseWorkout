@@ -5,22 +5,29 @@ using FirebaseWorkout.Model;
 
 namespace FirebaseWorkout.Service.DBService.Firebase
 {
+    // Repository של דיווחי תקלות - אחראי על כל הפעולות של דיווחים
+    // מול Firebase Realtime Database תחת הנתיב reports/
     public class FirebaseReportsRepository : FirebaseRealtimeService, IReportRepository
     {
+        // שירות לוגים
         private readonly IAppLogger _appLogger;
 
+        // הקונסטרקטור מקבל שירות לוגים דרך DI
         public FirebaseReportsRepository(IAppLogger appLogger)
         {
             _appLogger = appLogger;
         }
 
+        // יצירת דיווח חדש ב-Firebase - מחזיר את ה-ID
         public async Task<string> CreateAsync(Report report)
         {
             try
             {
+                // יצירת מזהה ייחודי אם לא קיים
                 if (string.IsNullOrEmpty(report.Id))
                     report.Id = Guid.NewGuid().ToString();
 
+                // הגדרת תאריך דיווח אוטומטי
                 if (string.IsNullOrEmpty(report.ReportDate))
                     report.ReportDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
@@ -39,6 +46,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // שליפת דיווח לפי מזהה מ-Firebase
         public async Task<Report?> GetByIdAsync(string id)
         {
             try
@@ -69,6 +77,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // שליפת כל הדיווחים מ-Firebase עם מיפוי שדות מפורש
         public async Task<List<Report>> GetAllAsync()
         {
             try
@@ -78,6 +87,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
                     .OnceAsync<Report>();
 
                 _appLogger.LogDebug("FirebaseReportsRepository: GetAllAsync completed.");
+                // מיפוי מפורש של כל שדה כולל טיפול ב-null ב-IssueTypes
                 return all.Select(r => new Report
                 {
                     Id = r.Object.Id,
@@ -99,6 +109,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // שליפת דיווחים פתוחים (Open או InProgress) ממוינים לפי תאריך
         public async Task<List<Report>> GetOpenReportsAsync()
         {
             try
@@ -107,6 +118,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
                     .Child("reports")
                     .OnceAsync<Report>();
 
+                // סינון רק דיווחים פתוחים ומיון מהחדש לישן
                 var openReports = all
                     .Select(r => r.Object)
                     .Where(r => r.Status == "Open" || r.Status == "InProgress")
@@ -123,6 +135,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // שליפת כל הדיווחים של מחשב ספציפי לפי מזהה המחשב
         public async Task<List<Report>> GetByComputerIdAsync(string computerId)
         {
             try
@@ -147,6 +160,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // עדכון סטטוס דיווח (למשל Open → Closed) - שולח רק את שדה Status
         public async Task UpdateStatusAsync(string reportId, string newStatus)
         {
             try
@@ -165,6 +179,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // מחיקת דיווח לפי מזהה מ-Firebase
         public async Task DeleteAsync(string id)
         {
             try
@@ -183,6 +198,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // הרשמה לעדכונים בזמן אמת - מחזיר Observable שמקבל שינויים מ-Firebase
         public IObservable<FirebaseEvent<Report>> SubscribeToReportChanges()
         {
             try

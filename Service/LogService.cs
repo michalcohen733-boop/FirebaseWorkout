@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace FirebaseWorkout.Service
 {
+	// שירות לוגים - כותב הודעות דיבאג ושגיאות ל-Android Log
 	public class LogService : IAppLogger
 	{
+		// תג לזיהוי ההודעות ב-Logcat
 		private readonly string TAG = "KASATA";
 
+		// כתיבת הודעת דיבאג ל-Android Logcat
 		public void LogDebug(string message)
 		{
 #if ANDROID
@@ -20,6 +23,7 @@ namespace FirebaseWorkout.Service
 
 		}
 
+		// כתיבת הודעת שגיאה ל-Android Logcat
 		public void LogError(string message)
 		{
 #if ANDROID

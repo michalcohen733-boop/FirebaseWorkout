@@ -4,22 +4,29 @@ using FirebaseWorkout.Model;
 
 namespace FirebaseWorkout.Service.DBService.Firebase
 {
+    // Repository של מחשבים - אחראי על כל הפעולות של מחשבים
+    // מול Firebase Realtime Database תחת הנתיב computers/
     public class FirebaseComputersRepository : FirebaseRealtimeService, IComputerRepository
     {
+        // שירות לוגים
         private readonly IAppLogger _appLogger;
 
+        // הקונסטרקטור מקבל שירות לוגים דרך DI
         public FirebaseComputersRepository(IAppLogger appLogger)
         {
             _appLogger = appLogger;
         }
 
+        // יצירת מחשב חדש ב-Firebase - מחזיר את ה-ID
         public async Task<string> CreateAsync(Computer computer)
         {
             try
             {
+                // יצירת מזהה ייחודי אם לא קיים
                 if (string.IsNullOrEmpty(computer.Id))
                     computer.Id = Guid.NewGuid().ToString();
 
+                // הגדרת קוד QR - ברירת מחדל זהה ל-ID
                 if (string.IsNullOrEmpty(computer.QRCode))
                     computer.QRCode = computer.Id;
 
@@ -38,6 +45,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // שליפת מחשב לפי מזהה מ-Firebase
         public async Task<Computer?> GetByIdAsync(string id)
         {
             try
@@ -68,14 +76,18 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // חיפוש מחשב לפי קוד QR - שולף את כל המחשבים ומחפש התאמה
+        // מחפש גם לפי QRCode וגם לפי ID (גיבוי)
         public async Task<Computer?> GetByQRCodeAsync(string qrCode)
         {
             try
             {
+                // שליפת כל המחשבים מ-Firebase
                 var all = await _firebaseClient!
                     .Child("computers")
                     .OnceAsync<Computer>();
 
+                // חיפוש התאמה לפי QRCode או ID
                 var match = all
                     .Select(c => c.Object)
                     .FirstOrDefault(c => c.QRCode == qrCode || c.Id == qrCode);
@@ -90,6 +102,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // שליפת כל המחשבים מ-Firebase עם מיפוי שדות מפורש
         public async Task<List<Computer>> GetAllAsync()
         {
             try
@@ -99,6 +112,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
                     .OnceAsync<Computer>();
 
                 _appLogger.LogDebug("FirebaseComputersRepository: GetAllAsync completed.");
+                // מיפוי מפורש של כל שדה (ולא .Select(x => x.Object))
                 return all.Select(c => new Computer
                 {
                     Id = c.Object.Id,
@@ -115,6 +129,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // עדכון פרטי מחשב - שולח רק את השדות שהשתנו (Patch)
         public async Task UpdateAsync(Computer computer)
         {
             try
@@ -139,6 +154,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
             }
         }
 
+        // מחיקת מחשב לפי מזהה מ-Firebase
         public async Task DeleteAsync(string id)
         {
             try

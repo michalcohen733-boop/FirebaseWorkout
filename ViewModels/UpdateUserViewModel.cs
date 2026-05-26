@@ -7,24 +7,34 @@ using Microsoft.Maui.Graphics;
 
 namespace FirebaseWorkout.ViewModels
 {
+    // ViewModel של מסך עריכת משתמש (מנהל) - מאפשר עדכון פרטי משתמש
+    // מממש IQueryAttributable כדי לקבל את המשתמש הנבחר מרשימת המשתמשים
     public partial class UpdateUserViewModel : ObservableObject, IQueryAttributable
     {
+        // Repository משתמשים
         private readonly IAppUserRepository _userRepo;
+        // שירות התראות
         private readonly IAlertService _alertService;
+        // שירות לוגים
         private readonly IAppLogger _appLogger;
 
+        // המשתמש שנערך
         [ObservableProperty]
         private AppUser _user;
 
+        // הודעת סטטוס (שגיאה או הצלחה)
         [ObservableProperty]
         private string _statusMessage;
 
+        // האם להציג הודעת סטטוס
         [ObservableProperty]
         private bool _hasStatusMessage;
 
+        // צבע הודעת הסטטוס (אדום=שגיאה, ירוק=הצלחה)
         [ObservableProperty]
         private Color _statusColor = Color.FromArgb("#EF4444");
 
+        // הקונסטרקטור מקבל שירותים דרך DI
         public UpdateUserViewModel(
             IAppUserRepository userRepo,
             IAlertService alertService,
@@ -36,12 +46,14 @@ namespace FirebaseWorkout.ViewModels
             User = new AppUser();
         }
 
+        // מקבל את המשתמש הנבחר שהועבר מרשימת המשתמשים
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("selectedUser", out var obj) && obj is AppUser user)
                 User = user;
         }
 
+        // עדכון פרטי המשתמש ב-Firebase - כולל אימות קלט
         [RelayCommand]
         private async Task Update()
         {
