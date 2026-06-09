@@ -63,7 +63,7 @@ namespace FirebaseWorkout.ViewModels
 			_isAdmin = currentUser?.IsAdmin ?? false;
 			_isServicePerson = currentUser?.IsServicePerson ?? false;
 			// Service נראה ל-Admin ול-ServicePerson
-			_canSeeService = (_isAdmin ?? false) || (_isServicePerson ?? false);
+			_canSeeService = (_isServicePerson ?? false);
 			// Guest = אין CurrentUser או אין ID
 			_isGuest = currentUser == null || string.IsNullOrEmpty(currentUser.Id);
 			// אורח לא רואה Account ו-Logout

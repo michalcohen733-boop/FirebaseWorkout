@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FirebaseWorkout.Views.UsersListView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,6 +6,7 @@
     xmlns:models="clr-namespace:FirebaseWorkout.Model"
     xmlns:viewmodels="clr-namespace:FirebaseWorkout.ViewModels"
     Title="UsersListView"
+    BackgroundColor="#FFF1F2"
     x:DataType="viewmodels:UsersListViewModel">
 
     <Grid RowDefinitions=".13*,.13*,.9*">
@@ -16,22 +17,22 @@
                 FontSize="30"
                 HorizontalOptions="Center"
                 Text="Users List"
-                TextColor="CadetBlue"
+                TextColor="#831843"
                 VerticalOptions="Center" />
         </Grid>
 
-        <!--  Find && Filter Users 1:10  -->
+        <!--  Find && Filter Users  -->
         <Grid Grid.Row="1" ColumnDefinitions="7*,3*">
             <SearchBar Placeholder="find user" Text="{Binding SearchText}" />
 
             <Button
                 Grid.Column="1"
                 Margin="0,0,15,15"
-                BackgroundColor="LightBlue"
+                BackgroundColor="#F9A8D4"
                 FontFamily="MaterialIcons"
                 FontSize="19"
                 Text="{Binding FilterIcon}"
-                TextColor="DarkBlue"
+                TextColor="#831843"
                 WidthRequest="60" />
 
         </Grid>
@@ -55,14 +56,14 @@
                         FontSize="24"
                         HorizontalTextAlignment="Center"
                         Text="Users not found!"
-                        TextColor="Gray" />
+                        TextColor="#BE185D" />
 
                     <Label
                         Margin="0,0,0,100"
                         FontSize="24"
                         HorizontalTextAlignment="Center"
                         Text="Pull down to refresh"
-                        TextColor="Gray" />
+                        TextColor="#BE185D" />
                 </StackLayout>
             </CollectionView.EmptyView>
 
@@ -71,32 +72,31 @@
                     <Border
                         Margin="15,7"
                         Padding="15"
-                        Background="White"
-                        Stroke="LightGray"
+                        Background="#FCE7F3"
+                        Stroke="#F9A8D4"
                         StrokeShape="RoundRectangle 10">
 
                         <Grid
-                            ColumnDefinitions="*,Auto"
+                            ColumnDefinitions="*,Auto,Auto"
                             RowDefinitions="Auto, Auto"
+                            ColumnSpacing="8"
                             RowSpacing="5">
 
                             <!--  User First and Last Name  -->
                             <HorizontalStackLayout>
-                                <!--  User First Name  -->
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="16"
                                     Text="{Binding FirstName}"
+                                    TextColor="#831843"
                                     VerticalOptions="Center" />
-
-                                <!--  User Last Name  -->
                                 <Label
                                     Margin="5,0,0,0"
                                     FontAttributes="Bold"
                                     FontSize="16"
                                     Text="{Binding LastName}"
+                                    TextColor="#831843"
                                     VerticalOptions="Center" />
-
                             </HorizontalStackLayout>
 
                             <!--  User Email  -->
@@ -104,7 +104,7 @@
                                 Grid.Row="1"
                                 FontSize="13"
                                 Text="{Binding UserEmail}"
-                                TextColor="Gray"
+                                TextColor="#BE185D"
                                 VerticalOptions="Center" />
 
                             <!--  Registration Date  -->
@@ -112,6 +112,8 @@
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
                                 Padding="10,5"
+                                BackgroundColor="#F9A8D4"
+                                Stroke="#EC4899"
                                 StrokeShape="RoundRectangle 15"
                                 VerticalOptions="Center">
 
@@ -119,8 +121,24 @@
                                     FontAttributes="Bold"
                                     FontSize="12"
                                     Text="{Binding RegDate, StringFormat='{0:dd/MM/yyyy}'}"
+                                    TextColor="#831843"
                                     VerticalOptions="Center" />
                             </Border>
+
+                            <!--  אייקון מחיקה  -->
+                            <Button
+                                Grid.RowSpan="2"
+                                Grid.Column="2"
+                                Text="&#xe872;"
+                                FontFamily="MaterialIcons"
+                                FontSize="24"
+                                BackgroundColor="Transparent"
+                                TextColor="#BE185D"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                VerticalOptions="Center"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:UsersListViewModel}}, Path=DeleteUserCommand}"
+                                CommandParameter="{Binding .}" />
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -133,14 +151,13 @@
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Fill">
 
-            <!--  מסך טעינה  -->
             <Grid
                 HorizontalOptions="Fill"
                 IsVisible="{Binding IsBusy}"
                 VerticalOptions="Fill">
 
                 <BoxView
-                    BackgroundColor="LightBlue"
+                    BackgroundColor="#FCE7F3"
                     HorizontalOptions="Fill"
                     Opacity="0.7"
                     VerticalOptions="Fill" />
@@ -148,7 +165,7 @@
                 <ActivityIndicator
                     IsRunning="True"
                     WidthRequest="100"
-                    Color="Beige" />
+                    Color="#EC4899" />
             </Grid>
         </Grid>
     </Grid>

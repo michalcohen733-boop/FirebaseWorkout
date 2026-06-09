@@ -4,7 +4,7 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace FirebaseWorkout.Views;
 
-// Code-behind של מסך הסריקה - מנהל את המצלמה והרשאות
+// Code-behind של מסך הסריקה - מנהל את המצלמה וזיהוי ברקודים
 public partial class MainPageView : ContentPage
 {
     // שמירת ה-ViewModel לגישה ישירה (לסריקת QR)
@@ -18,32 +18,22 @@ public partial class MainPageView : ContentPage
         BindingContext = vm;
     }
 
-    // כשהמסך מופיע - בקשת הרשאת מצלמה והפעלתה
-    protected override async void OnAppearing()
+    // כשהמסך מופיע - מציג את אייקון המצלמה (לא פותח מצלמה אוטומטית)
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        // בדיקה ובקשת הרשאת מצלמה
-        var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-        if (status != PermissionStatus.Granted)
-            status = await Permissions.RequestAsync<Permissions.Camera>();
-
-        if (status != PermissionStatus.Granted)
-        {
-            await DisplayAlert("Camera Permission",
-                "Camera permission denied. You can still enter codes manually.", "OK");
-            return;
-        }
-
-        // הפעלת המצלמה לסריקה
-        cameraView.CameraEnabled = true;
+        _vm.IsPlaceholderVisible = true;
+        _vm.IsCameraVisible = false;
+        _vm.IsScanning = false;
     }
 
-    // כשיוצאים מהמסך - כיבוי המצלמה
+    // כשיוצאים מהמסך - כיבוי המצלמה ואיפוס המצב
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        cameraView.CameraEnabled = false;
+        _vm.IsCameraVisible = false;
+        _vm.IsPlaceholderVisible = true;
+        _vm.IsScanning = false;
     }
 
     // Event Handler לזיהוי ברקוד - נקרא כשהמצלמה מזהה QR Code
@@ -54,13 +44,14 @@ public partial class MainPageView : ContentPage
         {
             if (e.BarcodeResults?.Length > 0)
             {
-                // עצירת המצלמה בזמן עיבוד
-                cameraView.CameraEnabled = false;
+                // כיבוי המצלמה וחזרה לאייקון
+                _vm.IsCameraVisible = false;
+                _vm.IsPlaceholderVisible = true;
+                _vm.IsScanning = false;
+
                 // שליחת הקוד שנסרק ל-ViewModel לחיפוש ב-Firebase
                 string scannedCode = e.BarcodeResults[0].DisplayValue;
                 await _vm.HandleScannedCodeAsync(scannedCode);
-                // הפעלת המצלמה מחדש
-                cameraView.CameraEnabled = true;
             }
         });
     }

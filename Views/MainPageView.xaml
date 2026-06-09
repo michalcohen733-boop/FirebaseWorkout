@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
     Title="Scan QR Code"
-    BackgroundColor="#F9FAFB">
+    BackgroundColor="#FFF1F2">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -21,43 +21,74 @@
                 Text="Issue Scanner"
                 FontSize="22"
                 FontAttributes="Bold"
-                TextColor="#1F2937"
+                TextColor="#831843"
                 VerticalOptions="Center"
                 HorizontalOptions="StartAndExpand" />
             <Button
                 Text="&#xe8b8;"
                 Command="{Binding SettingsCommand}"
                 BackgroundColor="Transparent"
-                TextColor="#6366F1"
+                TextColor="#EC4899"
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 VerticalOptions="Center" />
         </HorizontalStackLayout>
 
-        <!-- Row 1: QR Scanner -->
-        <Border
-            Grid.Row="1"
-            Margin="20"
-            Padding="4"
-            BackgroundColor="White"
-            Stroke="#E5E7EB"
-            StrokeThickness="1"
-            StrokeShape="RoundRectangle 16">
-            <scanner:CameraView
-                x:Name="cameraView"
-                CameraEnabled="True"
-                CameraFacing="Back"
-                BarcodeSymbologies="QRCode"
-                OnDetectionFinished="OnBarcodesDetected"
-                HeightRequest="400" />
-        </Border>
+        <!-- Row 1: אזור סריקה - אייקון מצלמה או מצלמה פעילה -->
+        <Grid Grid.Row="1" Margin="20">
+
+            <!-- Placeholder - אייקון מצלמה שלחיצה עליו פותחת את המצלמה -->
+            <Border
+                IsVisible="{Binding IsPlaceholderVisible}"
+                BackgroundColor="White"
+                Stroke="#EC4899"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="4"
+                HeightRequest="400">
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                    <Label
+                        Text="&#xe412;"
+                        FontFamily="MaterialIcons"
+                        FontSize="80"
+                        TextColor="#EC4899"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="לחצי לסריקה"
+                        FontSize="18"
+                        TextColor="#BE185D"
+                        HorizontalOptions="Center" />
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenCameraCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- מצלמה - מוצגת רק אחרי לחיצה על האייקון -->
+            <Border
+                IsVisible="{Binding IsCameraVisible}"
+                BackgroundColor="White"
+                Stroke="#EC4899"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="4"
+                HeightRequest="400">
+                <scanner:CameraView
+                    x:Name="cameraView"
+                    CameraEnabled="{Binding IsCameraVisible}"
+                    CameraFacing="Back"
+                    BarcodeSymbologies="QRCode"
+                    OnDetectionFinished="OnBarcodesDetected" />
+            </Border>
+
+        </Grid>
 
         <!-- Row 2: Manual entry -->
         <VerticalStackLayout Grid.Row="2" Margin="20" Spacing="12">
             <Label
                 Text="Or enter code manually:"
                 FontSize="14"
-                TextColor="#6B7280" />
+                TextColor="#831843" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -68,14 +99,14 @@
                     Placeholder="Enter computer code"
                     Text="{Binding ManualCode}"
                     BackgroundColor="White"
-                    TextColor="#1F2937"
+                    TextColor="#831843"
                     HeightRequest="50"
                     Margin="0,0,8,0" />
                 <Button
                     Grid.Column="1"
                     Text="Go"
                     Command="{Binding SubmitManualCodeCommand}"
-                    BackgroundColor="#6366F1"
+                    BackgroundColor="#EC4899"
                     TextColor="White"
                     WidthRequest="80"
                     HeightRequest="50"
@@ -88,7 +119,7 @@
         <Label
             Grid.Row="3"
             Text="{Binding StatusMessage}"
-            TextColor="#EF4444"
+            TextColor="#BE185D"
             HorizontalOptions="Center"
             Margin="0,0,0,20"
             IsVisible="{Binding HasStatusMessage}" />

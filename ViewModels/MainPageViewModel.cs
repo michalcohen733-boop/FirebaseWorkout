@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FirebaseWorkout.Model;
 using FirebaseWorkout.Service.DBService;
+using Microsoft.Maui.ApplicationModel;
 
 namespace FirebaseWorkout.ViewModels
 {
@@ -24,9 +25,44 @@ namespace FirebaseWorkout.ViewModels
         [ObservableProperty]
         private bool _isScanning = true;
 
+        // האם להציג את המצלמה (נסתרת בהתחלה)
+        [ObservableProperty]
+        private bool _isCameraVisible = false;
+
+        // האם להציג את אייקון המצלמה (מוצג בהתחלה)
+        [ObservableProperty]
+        private bool _isPlaceholderVisible = true;
+
         // הודעת סטטוס/שגיאה למשתמש
         [ObservableProperty]
         private string _statusMessage;
+
+        // פתיחת המצלמה לאחר בדיקת הרשאות
+        [RelayCommand]
+        private async Task OpenCamera()
+        {
+            try
+            {
+                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                    status = await Permissions.RequestAsync<Permissions.Camera>();
+
+                if (status != PermissionStatus.Granted)
+                {
+                    await Application.Current!.Windows[0].Page!
+                        .DisplayAlert("הרשאה נדחתה", "צריך הרשאת מצלמה לסריקה. תוכלי להזין קוד ידנית.", "אישור");
+                    return;
+                }
+
+                IsPlaceholderVisible = false;
+                IsCameraVisible = true;
+                IsScanning = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"OpenCamera failed: {ex.Message}");
+            }
+        }
 
         // האם יש הודעת סטטוס להציג
         [ObservableProperty]

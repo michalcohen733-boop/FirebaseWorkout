@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="FirebaseWorkout.Views.SignUpView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -8,11 +8,10 @@
     NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Background>
-        <!--  Man Of Steel  -->
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0.0" Color="#780206" />
-            <!--<GradientStop Offset="0.5" Color="#12D8FA"/>-->
-            <GradientStop Offset="1.0" Color="#061161" />
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0.0" Color="#FCE7F3" />
+            <GradientStop Offset="0.5" Color="#F9A8D4" />
+            <GradientStop Offset="1.0" Color="#EC4899" />
         </LinearGradientBrush>
     </ContentPage.Background>
     <Grid>
@@ -26,7 +25,7 @@
                 <Label
                     FontSize="24"
                     Text="Create Account"
-                    TextColor="White" />
+                    TextColor="#831843" />
             </HorizontalStackLayout>
 
             <ScrollView Grid.Row="1" Grid.Column="1">
@@ -36,70 +35,71 @@
                 <Border
                     Margin="0,0,0,10"
                     Padding="10"
-                    Stroke="#ccc"
+                    BackgroundColor="White"
+                    Stroke="#F9A8D4"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
-
                     <Entry
                         FontSize="16"
                         Placeholder="First Name"
+                        PlaceholderColor="#F9A8D4"
                         Text="{Binding FName}"
-                        TextColor="Wheat" />
-
+                        TextColor="#831843" />
                 </Border>
 
                 <!--  שדה שם משפחה  -->
                 <Border
                     Margin="0,0,0,10"
                     Padding="10"
-                    Stroke="#ccc"
+                    BackgroundColor="White"
+                    Stroke="#F9A8D4"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
-
                     <Entry
                         FontSize="16"
                         Placeholder="Last Name"
+                        PlaceholderColor="#F9A8D4"
                         Text="{Binding LName}"
-                        TextColor="Wheat" />
+                        TextColor="#831843" />
                 </Border>
 
                 <!--  שדה דואל  -->
                 <Border
                     Margin="0,0,0,10"
                     Padding="10"
-                    Stroke="#ccc"
+                    BackgroundColor="White"
+                    Stroke="#F9A8D4"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
-
                     <Entry
                         FontSize="16"
                         Keyboard="Email"
                         Placeholder="Email"
+                        PlaceholderColor="#F9A8D4"
                         Text="{Binding UEmail}"
-                        TextColor="Wheat" />
-
+                        TextColor="#831843" />
                 </Border>
 
                 <!--  שדה סיסמה  -->
                 <Border
                     Margin="0,0,0,10"
-                    Stroke="#ccc"
+                    BackgroundColor="White"
+                    Stroke="#F9A8D4"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
                     <Grid
                         Padding="10"
                         ColumnDefinitions="*,Auto"
                         VerticalOptions="Center">
-
                         <Entry
                             BackgroundColor="Transparent"
                             FontSize="16"
                             IsPassword="{Binding EntryAsPassword}"
                             Placeholder="Password"
+                            PlaceholderColor="#F9A8D4"
                             Text="{Binding UPassword}"
-                            TextColor="Wheat"
+                            TextColor="#831843"
                             VerticalOptions="Center" />
-
                         <Button
                             Margin="5,0,0,0"
                             Padding="0"
@@ -109,7 +109,7 @@
                             FontSize="24"
                             HorizontalOptions="End"
                             Text="{Binding PasswordIconCode}"
-                            TextColor="White"
+                            TextColor="#BE185D"
                             VerticalOptions="Center" />
                     </Grid>
                 </Border>
@@ -118,21 +118,23 @@
                 <Border
                     Margin="0,0,0,10"
                     Padding="10"
-                    Stroke="#ccc"
+                    BackgroundColor="White"
+                    Stroke="#F9A8D4"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
-
                     <Entry
                         FontSize="16"
                         Keyboard="Telephone"
                         Placeholder="Mobile"
+                        PlaceholderColor="#F9A8D4"
                         Text="{Binding UMobile}"
-                        TextColor="Wheat" />
+                        TextColor="#831843" />
                 </Border>
 
-                <!--  כפתור כניסה  -->
+                <!--  כפתור הרשמה  -->
                 <Button
                     Command="{Binding SignUpCommand}"
+                    BackgroundColor="#BE185D"
                     CornerRadius="8"
                     FontSize="20"
                     HeightRequest="50"
@@ -144,25 +146,22 @@
                     Margin="0,10,0,0"
                     HorizontalOptions="Center"
                     Spacing="6">
-
                     <Label
                         FontSize="14"
                         Text="Already have an account?"
-                        TextColor="White"
+                        TextColor="#831843"
                         VerticalOptions="Center" />
-
                     <Label
                         FontSize="16"
                         FontAttributes="Bold"
                         Text="SignIn"
-                        TextColor="Aquamarine"
+                        TextColor="#BE185D"
                         VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding NavigateToSignInCommand}" />
                         </Label.GestureRecognizers>
                     </Label>
-
                 </HorizontalStackLayout>
 
                 <!--  Error Message  -->
@@ -172,7 +171,7 @@
                     HorizontalTextAlignment="Center"
                     IsVisible="{Binding SignUpMessageVisible}"
                     Text="{Binding ErrorMessage}"
-                    TextColor="#ff4dd2" />
+                    TextColor="#BE185D" />
 
             </VerticalStackLayout>
             </ScrollView>
@@ -184,16 +183,15 @@
             IsVisible="{Binding IsBusy}"
             VerticalOptions="Fill">
             <BoxView
-                BackgroundColor="LightBlue"
+                BackgroundColor="#FCE7F3"
                 HorizontalOptions="Fill"
                 Opacity="0.7"
                 VerticalOptions="Fill" />
             <ActivityIndicator
                 IsRunning="True"
                 WidthRequest="100"
-                Color="Beige" />
+                Color="#EC4899" />
         </Grid>
     </Grid>
-
 
 </ContentPage>

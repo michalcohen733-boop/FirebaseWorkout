@@ -5,15 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:model="clr-namespace:FirebaseWorkout.Model"
     Title="Report Issue"
-    BackgroundColor="#F9FAFB">
+    BackgroundColor="#FFF1F2">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
 
             <!-- Computer info card -->
             <Border
-                BackgroundColor="White"
-                Stroke="#E5E7EB"
+                BackgroundColor="#FCE7F3"
+                Stroke="#F9A8D4"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 12"
                 Padding="16">
@@ -22,12 +22,12 @@
                         Text="Computer Info"
                         FontSize="12"
                         FontAttributes="Bold"
-                        TextColor="#6B7280" />
+                        TextColor="#BE185D" />
                     <Label
                         Text="{Binding ComputerDisplayInfo}"
                         FontSize="18"
                         FontAttributes="Bold"
-                        TextColor="#1F2937" />
+                        TextColor="#831843" />
                 </VerticalStackLayout>
             </Border>
 
@@ -36,7 +36,7 @@
                 Text="What's wrong with the computer?"
                 FontSize="18"
                 FontAttributes="Bold"
-                TextColor="#1F2937"
+                TextColor="#831843"
                 Margin="0,8,0,0" />
 
             <!-- Issue checkboxes -->
@@ -47,7 +47,7 @@
                     <DataTemplate x:DataType="model:IssueType">
                         <Border
                             BackgroundColor="White"
-                            Stroke="#E5E7EB"
+                            Stroke="#F9A8D4"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 8"
                             Padding="12"
@@ -55,12 +55,12 @@
                             <HorizontalStackLayout>
                                 <CheckBox
                                     IsChecked="{Binding IsSelected}"
-                                    Color="#6366F1"
+                                    Color="#EC4899"
                                     VerticalOptions="Center" />
                                 <Label
                                     Text="{Binding Name}"
                                     FontSize="16"
-                                    TextColor="#1F2937"
+                                    TextColor="#831843"
                                     VerticalOptions="Center"
                                     Margin="12,0,0,0" />
                             </HorizontalStackLayout>
@@ -74,21 +74,21 @@
                 <Label
                     Text="Please describe:"
                     FontSize="14"
-                    TextColor="#6B7280"
+                    TextColor="#BE185D"
                     Margin="0,8,0,4" />
                 <Editor
                     Text="{Binding OtherDescription}"
                     Placeholder="Describe the issue..."
                     HeightRequest="100"
                     BackgroundColor="White"
-                    TextColor="#1F2937" />
+                    TextColor="#831843" />
             </VerticalStackLayout>
 
             <!-- Submit button -->
             <Button
                 Text="Submit Report"
                 Command="{Binding SubmitReportCommand}"
-                BackgroundColor="#6366F1"
+                BackgroundColor="#EC4899"
                 TextColor="White"
                 HeightRequest="50"
                 CornerRadius="12"

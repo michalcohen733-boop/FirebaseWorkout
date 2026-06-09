@@ -77,6 +77,56 @@ namespace FirebaseWorkout.ViewModels
 			throw new NotImplementedException();
 		}
 
+		// מחיקת משתמש מ-Firebase (עם דיאלוג אישור, מונע מחיקת עצמי)
+		[RelayCommand]
+		private async Task DeleteUser(AppUser? user)
+		{
+			if (user == null) return;
+
+			var currentUser = (App.Current as App)?.CurrentUser;
+
+			// בדיקה שהמשתמש המחובר הוא אדמין
+			if (currentUser == null || !currentUser.IsAdmin)
+			{
+				return;
+			}
+
+			if (currentUser != null && user.Id == currentUser.Id)
+			{
+				await Application.Current!.Windows[0].Page!
+					.DisplayAlert("שגיאה",
+						"לא ניתן למחוק את המשתמש המחובר כרגע",
+						"אישור");
+				return;
+			}
+
+			var confirm = await Application.Current!.Windows[0].Page!
+				.DisplayAlert(
+					"מחיקת משתמש",
+					$"האם למחוק את המשתמש {user.FirstName} {user.LastName}?",
+					"כן, מחק",
+					"ביטול");
+
+			if (!confirm) return;
+
+			try
+			{
+				await _dbService.DeleteByIdAsync(user.Id);
+
+				await Application.Current!.Windows[0].Page!
+					.DisplayAlert("הצלחה",
+						"המשתמש נמחק בהצלחה",
+						"אישור");
+			}
+			catch (Exception ex)
+			{
+				await Application.Current!.Windows[0].Page!
+					.DisplayAlert("שגיאה",
+						$"שגיאה במחיקת המשתמש: {ex.Message}",
+						"אישור");
+			}
+		}
+
 		// ניווט למסך עריכת משתמש - מעביר את המשתמש הנבחר
 		[RelayCommand]
 		private async Task NavigateToAccountPage()

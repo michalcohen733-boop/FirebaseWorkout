@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="FirebaseWorkout.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -12,62 +12,62 @@
             <!--  HOME Option  -->
             <Button
                 Margin="5"
-                BackgroundColor="Wheat"
+                BackgroundColor="#F9A8D4"
                 Command="{Binding NavigateToHomePageCommand}"
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
                 Text="{Binding HomeIcon}"
-                TextColor="Black" />
+                TextColor="#831843" />
 
             <!--  Account Option  -->
             <Button
                 Margin="0,5,5,5"
-                BackgroundColor="Wheat"
+                BackgroundColor="#F9A8D4"
                 Command="{Binding NavigateToAccountPageCommand}"
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
                 IsVisible="{Binding ShowAccountAndLogout}"
                 Text="{Binding AccountIcon}"
-                TextColor="Black" />
+                TextColor="#831843" />
 
 
             <!--  IsAdmin Option  -->
             <Button
                 Margin="0,5,5,5"
-                BackgroundColor="Wheat"
+                BackgroundColor="#F9A8D4"
                 Command="{Binding NavigateToAdminPageCommand}"
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
                 IsVisible="{Binding IsAdmin}"
                 Text="{Binding AdminIcon}"
-                TextColor="Black" />
+                TextColor="#831843" />
 
             <!--  Service Option (Admin or ServicePerson)  -->
             <Button
                 Margin="0,5,5,5"
-                BackgroundColor="Wheat"
+                BackgroundColor="#F9A8D4"
                 Command="{Binding NavigateToServicePageCommand}"
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
                 IsVisible="{Binding CanSeeService}"
                 Text="{Binding ServiceIcon}"
-                TextColor="Black" />
+                TextColor="#831843" />
 
             <!--  SignOut Option  -->
             <Button
                 Margin="0,5,5,5"
-                BackgroundColor="Wheat"
+                BackgroundColor="#F9A8D4"
                 Command="{Binding LogoutCommand}"
                 FontFamily="MaterialIcons"
                 FontSize="24"
                 HorizontalOptions="Start"
                 IsVisible="{Binding ShowAccountAndLogout}"
                 Text="{Binding LogoutIcon}"
-                TextColor="Black" />
+                TextColor="#831843" />
 
 
         </HorizontalStackLayout>

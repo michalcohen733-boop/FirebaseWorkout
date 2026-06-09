@@ -91,6 +91,24 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 				throw new Exception("Delete user failed!");
 			}
 		}
+		// מחיקת משתמש מ-Database בלבד לפי מזהה (ללא Auth - למנהל)
+		public async Task DeleteByIdAsync(string id)
+		{
+			try
+			{
+				await _firebaseClient!
+					.Child("users")
+					.Child(id)
+					.DeleteAsync();
+				_appLogger.LogDebug($"FirebaseUsersRepository DeleteByIdAsync {id} successfully.");
+			}
+			catch (Exception ex)
+			{
+				_appLogger.LogDebug($"FirebaseUsersRepository DeleteByIdAsync {id} failed: {ex.Message}");
+				throw new Exception("Delete user failed!");
+			}
+		}
+
 		public List<AppUser> GetAllAsync()
 		{
 			throw new NotImplementedException();

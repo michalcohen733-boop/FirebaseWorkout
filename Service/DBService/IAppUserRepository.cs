@@ -16,6 +16,8 @@ namespace FirebaseWorkout.Service.DBService
 		Task UpdateAsync(AppUser appUser);
 		// מחיקת משתמש (גם מ-Auth וגם מ-Database)
 		Task DeleteAsync(AppUser appUser);
+		// מחיקת משתמש מ-Database בלבד לפי מזהה (למנהל)
+		Task DeleteByIdAsync(string id);
 		// כניסה עם אימייל וסיסמה, מחזיר את אובייקט המשתמש
 		Task<AppUser> SignInAsync(string userEmail, string userPassword);
 		// שליפת משתמש לפי מזהה
